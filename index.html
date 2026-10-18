@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radio Recuerdos | 6 Emisoras en Vivo</title>
+<style>
+  :root {
+    --azul: #0d2b52;
+    --azul-claro: #2a6fb0;
+    --celeste: #7ec8e3;
+    --amarillo: #ffcc00;
+    --amarillo-claro: #ffe680;
+    --negro: #0a0a0a;
+    --rojo: #e63946;
+    --blanco: #ffffff;
+    --gris-claro: #f4f7fb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--gris-claro);
+    color: var(--negro);
+    line-height: 1.6;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(90deg, var(--azul), var(--azul-claro));
+    color: var(--blanco);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+
+  .header-contenido {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .logo {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--amarillo);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .logo span { color: var(--blanco); }
+
+  nav ul { list-style: none; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  nav a {
+    color: var(--blanco);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+    font-size: 0.95rem;
+  }
+  nav a:hover { color: var(--amarillo); }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: linear-gradient(135deg, var(--azul) 0%, var(--azul-claro) 60%, var(--celeste) 100%);
+    color: var(--blanco);
+    padding: 3rem 2rem 4rem;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 2.3rem;
+    margin-bottom: 0.5rem;
+    color: var(--amarillo);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .hero p {
+    font-size: 1rem;
+    color: var(--amarillo-claro);
+    margin-bottom: 2rem;
+  }
+
+  /* ===== PANEL DEL REPRODUCTOR ===== */
+  .reproductor-panel {
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--celeste);
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  }
+
+  .radio-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+  }
+
+  .radio-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--amarillo), var(--rojo));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+  }
+
+  .radio-texto { flex: 1; min-width: 0; }
+
+  .radio-texto h3 {
+    font-size: 1.15rem;
+    color: var(--amarillo);
+    margin-bottom: 0.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .radio-texto p {
+    font-size: 0.85rem;
+    color: var(--celeste);
+  }
+
+  /* Ecualizador animado */
+  .ecualizador {
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+    height: 30px;
+    margin-left: auto;
+  }
+  .ecualizador span {
+    width: 4px;
+    background: var(--amarillo);
+    border-radius: 2px;
+    height: 6px;
+  }
+  .ecualizador.activo span { animation: ecualizar 0.8s ease-in-out infinite; }
+  .ecualizador.activo span:nth-child(1) { animation-delay: 0s; }
+  .ecualizador.activo span:nth-child(2) { animation-delay: 0.1s; }
+  .ecualizador.activo span:nth-child(3) { animation-delay: 0.2s; }
+  .ecualizador.activo span:nth-child(4) { animation-delay: 0.3s; }
+  .ecualizador.activo span:nth-child(5) { animation-delay: 0.4s; }
+
+  @keyframes ecualizar {
+    0%, 100% { height: 6px; }
+    50% { height: 28px; }
+  }
+
+  .barra-volumen {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .barra-volumen input[type="range"] {
+    flex: 1;
+    accent-color: var(--amarillo);
+    cursor: pointer;
+  }
+  .btn-mute {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--amarillo-claro);
+  }
+
+  /* ===== SECCIONES ===== */
+  section { padding: 3rem 2rem; }
+  .contenedor { max-width: 1100px; margin: 0 auto; }
+
+  .titulo-seccion {
+    font-size: 1.8rem;
+    color: var(--azul);
+    margin-bottom: 0.5rem;
+    border-left: 6px solid var(--amarillo);
+    padding-left: 1rem;
+  }
+  .subtitulo {
+    color: var(--azul-claro);
+    margin-bottom: 2rem;
+    padding-left: 1.4rem;
+  }
+
+  .emisoras { background: var(--blanco); }
+
+  /* ===== BOTONES DE LAS 6 RADIOS ===== */
+  .grid-botones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .btn-radio {
+    background: var(--blanco);
+    border: 3px solid var(--color-radio, var(--azul-claro));
+    border-radius: 16px;
+    padding: 1.3rem 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+    transition: transform 0.25s, box-shadow 0.25s, background 0.3s, color 0.3s;
+    font-family: inherit;
+    color: var(--azul);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(13,43,82,0.08);
+  }
+
+  .btn-radio:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(13,43,82,0.2);
+  }
+
+  .btn-radio .icono {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: var(--color-radio, var(--azul-claro));
+    color: var(--blanco);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    transition: transform 0.25s;
+  }
+
+  .btn-radio:hover .icono { transform: scale(1.1) rotate(-5deg); }
+
+  .btn-radio .info { flex: 1; min-width: 0; }
+
+  .btn-radio .info h3 {
+    font-size: 1rem;
+    margin-bottom: 0.15rem;
+    color: var(--azul);
+    transition: color 0.3s;
+  }
+
+  .btn-radio .info span {
+    font-size: 0.78rem;
+    color: var(--azul-claro);
+    font-weight: 600;
+  }
+
+  .btn-radio .indicador {
+    font-size: 1.3rem;
+    color: var(--color-radio, var(--azul-claro));
+    transition: transform 0.25s;
+  }
+
+  /* ---- Estado: radio activa (sonando) ---- */
+  .btn-radio.activa {
+    background: var(--color-radio, var(--azul-claro));
+    border-color: var(--color-radio, var(--azul-claro));
+    color: var(--blanco);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    transform: translateY(-3px);
+  }
+
+  .btn-radio.activa .icono {
+    background: rgba(255,255,255,0.25);
+    animation: pulsoIcono 1.5s infinite;
+  }
+
+  @keyframes pulsoIcono {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+
+  .btn-radio.activa .info h3,
+  .btn-radio.activa .info span { color: var(--blanco); }
+
+  .btn-radio.activa .indicador {
+    color: var(--blanco);
+    content: '❚❚';
+  }
+
+  /* Etiqueta "EN VIVO" en la tarjeta activa */
+  .btn-radio.activa::after {
+    content: '● EN VIVO';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: var(--rojo);
+    color: var(--blanco);
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-weight: bold;
+    animation: parpadeo 1.2s infinite;
+  }
+
+  @keyframes parpadeo {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* ===== CONTACTO ===== */
+  .contacto { background: linear-gradient(135deg, var(--amarillo-claro), var(--celeste)); }
+  .contacto .titulo-seccion { color: var(--azul); }
+  .contacto .subtitulo { color: var(--azul); }
+
+  form { max-width: 600px; display: flex; flex-direction: column; gap: 1rem; }
+  form input, form textarea {
+    padding: 0.9rem 1rem;
+    border: 2px solid var(--azul-claro);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: var(--blanco);
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  form input:focus, form textarea:focus {
+    border-color: var(--rojo);
+    box-shadow: 0 0 0 3px rgba(230,57,70,0.2);
+  }
+  form textarea { resize: vertical; min-height: 120px; }
+
+  .btn-enviar {
+    background: var(--rojo);
+    color: var(--blanco);
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .btn-enviar:hover { background: var(--azul); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--negro);
+    color: var(--blanco);
+    text-align: center;
+    padding: 2rem 1rem;
+    border-top: 4px solid var(--amarillo);
+  }
+  footer .redes { display: flex; justify-content: center; gap: 1.2rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  footer .redes a { color: var(--celeste); text-decoration: none; transition: color 0.3s; }
+  footer .redes a:hover { color: var(--amarillo); }
+  footer p { font-size: 0.85rem; color: #aaa; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .header-contenido { flex-direction: column; text-align: center; }
+    nav ul { justify-content: center; gap: 1rem; }
+    .hero h1 { font-size: 1.7rem; }
+    .hero { padding: 2.5rem 1.2rem 3rem; }
+    .reproductor-panel { padding: 1.2rem; }
+    .ecualizador { display: none; }
+    section { padding: 2.5rem 1.2rem; }
+    .titulo-seccion { font-size: 1.4rem; }
+  }
+
+  @media (max-width: 400px) {
+    nav ul { flex-direction: column; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="header-contenido">
+    <div class="logo">📻 Radio <span>Recuerdos</span></div>
+    <nav>
+      <ul>
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#emisoras">Emisoras</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== HERO + REPRODUCTOR ===== -->
+<section class="hero" id="inicio">
+  <h1>🎶 Música en Vivo</h1>
+  <p>Elige una de las 6 emisoras y comienza a escuchar</p>
+
+  <div class="reproductor-panel">
+    <!-- 🎧 ÚNICO <audio> de la página. Su src cambia dinámicamente -->
+    <audio id="audioStream" preload="none" crossorigin="anonymous"></audio>
+
+    <div class="radio-info">
+      <div class="radio-logo" id="radioLogo">🎵</div>
+      <div class="radio-texto">
+        <h3 id="radioNombre">Selecciona una emisora</h3>
+        <p id="radioEstado">Haz clic en un botón para comenzar</p>
+      </div>
+      <div class="ecualizador" id="ecualizador">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <div class="barra-volumen">
+      <button class="btn-mute" id="btnMute" aria-label="Silenciar">🔊</button>
+      <input type="range" id="volumen" min="0" max="100" value="70" aria-label="Volumen">
+    </div>
+  </div>
+</section>
+
+<!-- ===== BOTONES DE LAS 6 RADIOS ===== -->
+<section class="emisoras" id="emisoras">
+  <div class="contenedor">
+    <h2 class="titulo-seccion">📡 Elige tu Emisora</h2>
+    <p class="subtitulo">Al cambiar de botón, la radio anterior se detiene automáticamente</p>
+
+    <div class="grid-botones" id="gridBotones">
+      <!-- Los 6 botones se generan automáticamente con JavaScript -->
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACTO ===== -->
+<section class="contacto" id="contacto">
+  <div class="contenedor">
+    <h2 class="titulo-seccion">✉️ Contacto</h2>
+    <p class="subtitulo">Envíanos tus saludos o pedidos musicales</p>
+
+    <form id="formContacto">
+      <input type="text" placeholder="Tu nombre" required>
+      <input type="email" placeholder="Tu correo electrónico" required>
+      <textarea placeholder="Escribe tu mensaje..." required></textarea>
+      <button type="submit" class="btn-enviar">Enviar mensaje</button>
+    </form>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="redes">
+    <a href="#">Facebook</a>
+    <a href="#">Instagram</a>
+    <a href="#">YouTube</a>
+  </div>
+  <p>© 2026 Radio Recuerdos · Todos los derechos reservados</p>
+</footer>
+
+<script>
+/* =========================================================
+   LAS 6 RADIOS
+   ---------------------------------------------------------
+   Reemplaza "REEMPLAZA_X" con los streams reales de Zeno.FM
+   ========================================================= */
+const radios = [
+  {
+    id: 'generacion-80s',
+    nombre: 'GENERACIÓN 80s 90s',
+    genero: '80s y 90s',
+    emoji: '📻',
+    color: '#e63946',
+    stream: 'https://stream.zeno.fm/hcs6x0szqaotv'
+  },
+  {
+    id: 'recuerdos',
+    nombre: 'Radio Recuerdos',
+    genero: 'Clásicos',
+    emoji: '🎶',
+    color: '#2a6fb0',
+    //stream: 'https://stream.zeno.fm/0r0xa792kwzuv'
+    stream: 'https://stream.zeno.fm/cagpog2te1nuv'
+  },
+  {
+    id: 'romantica',
+    nombre: 'Romántica',
+    genero: 'Viejas Románticas',
+    emoji: '💖',
+    color: '#c1121f',
+    //stream: 'https://stream.zeno.fm/mq3mcad2em0uv'
+    stream: 'https://api.zeno.fm/mounts/metadata/subscribe/mq3mcad2em0uv'
+  },
+  {
+    id: 'Exitos Mundiales',
+    nombre: 'Exitos Mundiales',
+    genero: 'Exitos Mundiales',
+    emoji: '🎸',
+    color: '#0d2b52',
+    stream: 'https://stream.zeno.fm/kubqpp4m4ceuv'
+  },
+  {
+    id: 'RADIOTECNO',
+    nombre: 'RADIOTECNO',
+    genero: 'Tecno',
+    emoji: '🌴',
+    color: '#ffb703',
+    stream: 'https://stream.zeno.fm/nu1enm3w968uv'
+  },
+  {
+    id: 'Unlimited80s (80s 90s Hits)',
+    nombre: '80s 90s Hits',
+    genero: 'Pop',
+    emoji: '🎤',
+    color: '#7ec8e3',
+    stream: 'https://stream.zeno.fm/wa0fruhshhkuv'
+  }
+];
+
+/* =========================================================
+   REFERENCIAS
+   ========================================================= */
+const audio          = document.getElementById('audioStream');
+const radioLogo      = document.getElementById('radioLogo');
+const radioNombre    = document.getElementById('radioNombre');
+const radioEstado    = document.getElementById('radioEstado');
+const ecualizador    = document.getElementById('ecualizador');
+const volumen        = document.getElementById('volumen');
+const btnMute        = document.getElementById('btnMute');
+const gridBotones    = document.getElementById('gridBotones');
+const formContacto   = document.getElementById('formContacto');
+
+let radioActualId  = null;
+let reproduciendo  = false;
+let silenciado     = false;
+let volumenPrevio  = 0.7;
+
+/* =========================================================
+   RENDERIZAR LOS 6 BOTONES
+   ========================================================= */
+function renderizarBotones() {
+  gridBotones.innerHTML = '';
+
+  radios.forEach(radio => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-radio';
+    btn.dataset.id = radio.id;
+    btn.style.setProperty('--color-radio', radio.color);
+    btn.setAttribute('aria-label', `Reproducir ${radio.nombre}`);
+
+    btn.innerHTML = `
+      <div class="icono">${radio.emoji}</div>
+      <div class="info">
+        <h3>${radio.nombre}</h3>
+        <span>${radio.genero}</span>
+      </div>
+      <div class="indicador">▶</div>
+    `;
+
+    btn.addEventListener('click', () => seleccionarRadio(radio.id));
+    gridBotones.appendChild(btn);
+  });
+}
+
+/* =========================================================
+   SELECCIONAR UNA RADIO (detiene la anterior y arranca la nueva)
+   ========================================================= */
+function seleccionarRadio(id) {
+  const radio = radios.find(r => r.id === id);
+  if (!radio) return;
+
+  // Si es la misma que ya está sonando → la pausamos
+  if (radioActualId === id && reproduciendo) {
+    pausarRadio();
+    return;
+  }
+
+  // 1️⃣ Detener cualquier radio anterior
+  audio.pause();
+  audio.currentTime = 0;
+
+  // 2️⃣ Actualizar el panel visual
+  radioLogo.textContent   = radio.emoji;
+  radioNombre.textContent = radio.nombre;
+  radioEstado.textContent = '🔴 Cargando...';
+
+  // 3️⃣ Cambiar la fuente y cargar
+  audio.src = radio.stream;
+  audio.load();
+
+  // 4️⃣ Marcar el botón activo y desmarcar los demás
+  document.querySelectorAll('.btn-radio').forEach(b => b.classList.remove('activa'));
+  const btnActivo = document.querySelector(`.btn-radio[data-id="${id}"]`);
+  if (btnActivo) {
+    btnActivo.classList.add('activa');
+    btnActivo.querySelector('.indicador').textContent = '❚❚';
+  }
+
+  // 5️⃣ Reproducir automáticamente
+  audio.play().then(() => {
+    radioActualId = id;
+    reproduciendo = true;
+    radioEstado.textContent = '🔴 Reproduciendo en vivo';
+    ecualizador.classList.add('activo');
+  }).catch(err => {
+    console.error('Error al reproducir:', err);
+    radioEstado.textContent = '⚠️ No se pudo cargar el stream';
+    ecualizador.classList.remove('activo');
+    reproduciendo = false;
+    if (btnActivo) {
+      btnActivo.classList.remove('activa');
+      btnActivo.querySelector('.indicador').textContent = '▶';
+    }
+  });
+}
+
+/* =========================================================
+   PAUSAR LA RADIO ACTUAL
+   ========================================================= */
+function pausarRadio() {
+  audio.pause();
+  reproduciendo = false;
+  radioEstado.textContent = '⏸ En pausa';
+  ecualizador.classList.remove('activo');
+
+  document.querySelectorAll('.btn-radio').forEach(b => {
+    b.classList.remove('activa');
+    b.querySelector('.indicador').textContent = '▶';
+  });
+}
+
+/* =========================================================
+   EVENTOS DE VOLUMEN
+   ========================================================= */
+audio.volume = 0.7;
+
+volumen.addEventListener('input', () => {
+  audio.volume = volumen.value / 100;
+  if (audio.volume > 0 && silenciado) {
+    silenciado = false;
+    btnMute.textContent = '🔊';
+  }
+});
+
+btnMute.addEventListener('click', () => {
+  if (!silenciado) {
+    volumenPrevio = audio.volume || 0.7;
+    audio.volume = 0;
+    volumen.value = 0;
+    btnMute.textContent = '🔇';
+    silenciado = true;
+  } else {
+    audio.volume = volumenPrevio;
+    volumen.value = volumenPrevio * 100;
+    btnMute.textContent = '🔊';
+    silenciado = false;
+  }
+});
+
+/* =========================================================
+   ERROR DEL STREAM
+   ========================================================= */
+audio.addEventListener('error', () => {
+  radioEstado.textContent = '⚠️ Stream no disponible';
+  ecualizador.classList.remove('activo');
+  reproduciendo = false;
+  document.querySelectorAll('.btn-radio').forEach(b => {
+    b.classList.remove('activa');
+    b.querySelector('.indicador').textContent = '▶';
+  });
+});
+
+/* =========================================================
+   FORM CONTACTO
+   ========================================================= */
+formContacto.addEventListener('submit', (e) => {
+  e.preventDefault();
+  alert('¡Gracias! Tu mensaje fue enviado.');
+  formContacto.reset();
+});
+
+/* =========================================================
+   INICIALIZAR
+   ========================================================= */
+renderizarBotones();
+</script>
+
+</body>
+</html>
